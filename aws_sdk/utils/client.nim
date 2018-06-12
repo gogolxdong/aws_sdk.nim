@@ -163,11 +163,9 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="
     # special header required by S3
     let headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
 
-    echo uri
     var query = c.endpoint & uri
 
     echo query
-    echo headers
     let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
 
     let resp = c.request(req, payload)
