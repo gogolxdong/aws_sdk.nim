@@ -7,7 +7,7 @@ import sph
 
 type
     Client* = ref object of RootObj
-        cl: AsyncHttpClient
+        cl: httpclient
         credentials*: AwsCredentials
         region*: string
         endpoint*: string
@@ -65,8 +65,8 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): Future[string] 
         if k != "Host":
             c.cl.headers[k] = v
 
-    let resp = await c.cl.request($req.uri, req.httpMethod, body = content)
-    result = await resp.body
+    let resp =  c.cl.request($req.uri, req.httpMethod, body = content)
+    result =  resp.body
 
 proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
@@ -94,7 +94,7 @@ proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): Js
         payloadHash: payloadHash
     )
 
-    let resp = await c.request(req, payload)
+    let resp =  c.request(req, payload)
     result = parseJson(resp)
 
 proc transf(x: XmlNode; parent: var JsonTree) =
@@ -180,7 +180,7 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod=
         payloadHash: payloadHash
     )
 
-    let resp = await c.request(req, payload)
+    let resp = c.request(req, payload)
     # echo "RESP: ", resp
     result = transform(parseXml(newStringStream resp))
     # result = parseJson(resp)
