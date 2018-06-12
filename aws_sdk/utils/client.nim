@@ -153,7 +153,7 @@ template appendParamsToQuery() =
     for k,v in r:
         uri &= fmt"&{k}={v}"
 
-proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod="POST"): JsonNode =
+proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
@@ -162,23 +162,14 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod=
     let payloadHash = sphHash[SHA256](payload)
 
     # special header required by S3
-    let headers = newStringTable({
-        "content-type": "application/x-www-form-urlencoded",
-        "x-amz-date": timeStr,
-        }, modeCaseInsensitive)
+    let headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
 
-    # var uri = c.endpoint & "?Action=" & name & "&Version=" & c.apiVersion
+    echo uri
+    var query = c.endpoint & uri
 
-    # for k,v in body:
-    #     uri &= fmt"&{k}={v}"
-        
-    # echo uri
-    let req = AwsRequest[StringTableRef](
-        httpMethod: httpMethod,
-        uri: parseUri(uri),
-        headers: headers,
-        payloadHash: payloadHash
-    )
+    echo query
+    echo headers
+    let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
 
     let resp = c.request(req, payload)
     # echo "RESP: ", resp
