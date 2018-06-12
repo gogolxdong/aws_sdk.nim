@@ -153,14 +153,8 @@ template appendParamsToQuery() =
     for k,v in r:
         uri &= fmt"&{k}={v}"
 
-<<<<<<< HEAD
-proc sendEC2Request*(c: Client, name, httpMethod, uri: string, r: JsonNode): Future[JsonNode] {.async.} =
-    const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
-    #const HttpDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'UTC'"
-=======
 proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod="POST"): Future[JsonNode] {.async.} =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
->>>>>>> f9221940802855aa73bc13004a0f645514e404c2
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
 
@@ -175,12 +169,7 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod=
 
     var uri = c.endpoint & "?Action=" & name & "&Version=" & c.apiVersion
 
-<<<<<<< HEAD
-    # appendParamsToQuery()
-    for k,v in r:
-=======
     for k,v in body:
->>>>>>> f9221940802855aa73bc13004a0f645514e404c2
         uri &= fmt"&{k}={v}"
         
     echo uri
