@@ -68,7 +68,7 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): Future[string] 
     let resp = await c.cl.request($req.uri, req.httpMethod, body = content)
     result = await resp.body
 
-proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): Future[JsonNode] {.async.} =
+proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     #const HttpDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'UTC'"
     let time = getTime()
