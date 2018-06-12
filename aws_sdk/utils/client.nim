@@ -44,7 +44,7 @@ proc close*(c: Client) =
         c.cl.close()
         c.cl = nil
 
-proc request*(c: Client, req: AwsRequest, content: string = ""): Future[string] {.async.} =
+proc request*(c: Client, req: AwsRequest, content: string = ""): string =
     var req = req
 
     const HttpDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'UTC'"
@@ -153,7 +153,7 @@ template appendParamsToQuery() =
     for k,v in r:
         uri &= fmt"&{k}={v}"
 
-proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod="POST"): Future[JsonNode] {.async.} =
+proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod="POST"): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
