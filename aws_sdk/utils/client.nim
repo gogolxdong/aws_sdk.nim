@@ -70,7 +70,6 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): string =
 
 proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
-    #const HttpDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'UTC'"
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
 
