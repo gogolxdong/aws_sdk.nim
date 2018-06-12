@@ -107,7 +107,7 @@ when defined(testing):
   echo timeStr
   let scope = AwsCredentialScope(time: getDateStr(), region: "ap-south-1", service: "ec2")
 
-  let headers = {"Host": "ec2.amazonaws.com","Content-Type": "application/x-www-form-urlencoded; charset=utf-8","X-Amz-Date": timeStr}
+  let headers = {"Host": "ec2.ap-south-1.amazonaws.com","Content-Type": "application/x-www-form-urlencoded; charset=utf-8","X-Amz-Date": timeStr}
 
   let request = AwsRequest[StringTableRef](
     httpMethod: "GET",
