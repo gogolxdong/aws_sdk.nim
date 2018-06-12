@@ -167,12 +167,12 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod=
         "x-amz-date": timeStr,
         }, modeCaseInsensitive)
 
-    var uri = c.endpoint & "?Action=" & name & "&Version=" & c.apiVersion
+    # var uri = c.endpoint & "?Action=" & name & "&Version=" & c.apiVersion
 
-    for k,v in body:
-        uri &= fmt"&{k}={v}"
+    # for k,v in body:
+    #     uri &= fmt"&{k}={v}"
         
-    echo uri
+    # echo uri
     let req = AwsRequest[StringTableRef](
         httpMethod: httpMethod,
         uri: parseUri(uri),
