@@ -7,7 +7,7 @@ import sph
 
 type
     Client* = ref object of RootObj
-        cl: httpclient
+        cl: Httpclient
         credentials*: AwsCredentials
         region*: string
         endpoint*: string
