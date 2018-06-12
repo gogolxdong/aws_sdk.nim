@@ -60,7 +60,7 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): Future[string] 
     req.headers["Authorization"] = authorizationHeaderv4(c.credentials, scope, req)
 
     if c.cl.isNil:
-        c.cl = newAsyncHttpClient()
+        c.cl = newHttpClient()
     for k, v in req.headers:
         if k != "Host":
             c.cl.headers[k] = v
