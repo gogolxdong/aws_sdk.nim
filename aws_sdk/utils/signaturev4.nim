@@ -87,16 +87,7 @@ proc authenticationQueryParamsv4(credentials: AwsCredentials,scope: AwsCredentia
   result["X-Amz-Expires"] = $expiry
   result["X-Amz-SignedHeaders"] = formattedHeaderNamesStr(request.headers)
 
-<<<<<<< HEAD
-proc authenticatedUriv4*(
-  request: AwsRequest,
-  credentials: AwsCredentials,
-  scope: AwsCredentialScope,
-  expiry: int
-): Uri =
-=======
 proc authenticatedUriv4*(request: AwsRequest,credentials: AwsCredentials,scope: AwsCredentialScope,expiry: int): Uri =
->>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
   let queryP = queryParams(request.uri)
   let authParams = authenticationQueryParamsv4(credentials, scope, request, expiry)
   let mergedParams = mergedTables(queryP, authParams)
@@ -110,20 +101,6 @@ proc authenticatedUriv4*(request: AwsRequest,credentials: AwsCredentials,scope: 
 when defined(testing):
   import unittest
   # from http://docs.aws.amazon.com/general/latest/gr/sigv4_signing.html
-<<<<<<< HEAD
-  let credentials = AwsCredentials(accessKeyId: "AKIDEXAMPLE", secretKey: "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY")
-  let scope = AwsCredentialScope(time: fromSeconds(1440938160), region: "us-east-1", service: "iam")
-
-  let headers = {
-    "Host": "iam.amazonaws.com",
-    "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-    "X-Amz-Date": "20150830T123600Z"
-  }
-
-  let request = AwsRequest[StringTableRef](
-    httpMethod: "GET",
-    uri: parseUri("https://iam.amazonaws.com/?Action=ListUsers&Version=2010-05-08"),
-=======
   let credentials = AwsCredentials(accessKeyId: "AKIAJKZYLEKXOY77V5YA", secretKey: "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")
   const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
   let timeStr = format($now(), HttpDateFormat)
@@ -135,18 +112,13 @@ when defined(testing):
   let request = AwsRequest[StringTableRef](
     httpMethod: "GET",
     uri: parseUri("https://ec2.ap-south-1.amazonaws.com/?Action=CreateVpc&Version=2016-10-15&CidrBlock=10.0.0.0"),
->>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     headers: newStringTable(headers),
     payloadHash: dehexify("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
   )
 
   let request2 = AwsRequest[Table[string, string]](
     httpMethod: "GET",
-<<<<<<< HEAD
-    uri: parseUri("https://iam.amazonaws.com/?Action=ListUsers&Version=2010-05-08"),
-=======
     uri: parseUri("https://ec2.ap-south-1.amazonaws.com/?Action=AttachVolume&Version=2016-10-15"),
->>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     headers: toTable(headers),
     payloadHash: dehexify("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
   )
