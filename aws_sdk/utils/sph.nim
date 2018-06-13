@@ -36,18 +36,18 @@ proc sphFinalize*(ctx: var $2): string =
 """ % [$name, $typ, $length.intVal]
   add(result, parseStmt(procs))
 
-{.compile: "vendor/sphlib/c/sha0.c".}
+{.compile: "c/sha0.c".}
 defineSphHash(SHA0, 20, "sha0", "", "", ""):
   type SHA0* = object
     buf: array[64, cuchar]
     val: array[5, uint32]
     count: uint64
 
-{.compile: "vendor/sphlib/c/sha1.c".}
+{.compile: "c/sha1.c".}
 defineSphHash(SHA1, 20, "sha1", "", "", ""):
   type SHA1* = distinct SHA0
 
-{.compile: "vendor/sphlib/c/sha2.c".}
+{.compile: "c/sha2.c".}
 defineSphHash(SHA224, 28, "sha224", "", "", ""):
   type SHA224* = object
     buf: array[64, cuchar]
@@ -57,7 +57,7 @@ defineSphHash(SHA224, 28, "sha224", "", "", ""):
 defineSphHash(SHA256, 32, "sha256", "", "sph_sha224", ""):
   type SHA256* = distinct SHA224
   
-{.compile: "vendor/sphlib/c/sha2big.c".}
+{.compile: "c/sha2big.c".}
 defineSphHash(SHA384, 48, "sha384", "", "", ""):
   type SHA384* = object
     buf: array[128, cuchar]
@@ -67,7 +67,7 @@ defineSphHash(SHA384, 48, "sha384", "", "", ""):
 defineSphHash(SHA512, 64, "sha512", "", "sph_sha384", ""):
   type SHA512* = distinct SHA384
 
-{.compile: "vendor/sphlib/c/tiger.c".}
+{.compile: "c/tiger.c".}
 defineSphHash(Tiger, 24, "tiger", "", "", ""):
   type Tiger* = object
     buf: array[64, cuchar]
@@ -77,7 +77,7 @@ defineSphHash(Tiger, 24, "tiger", "", "", ""):
 defineSphHash(Tiger2, 24, "tiger2", "sph_tiger_init", "sph_tiger", ""):  
   type Tiger2* = distinct Tiger
 
-{.compile: "vendor/sphlib/c/md2.c".}  
+{.compile: "c/md2.c".}  
 defineSphHash(MD2, 16, "md2", "", "", ""):
   type MD2* = object
     buf: array[16, cuchar]
@@ -86,21 +86,21 @@ defineSphHash(MD2, 16, "md2", "", "", ""):
     l: uint64
     count: uint64  
    
-{.compile: "vendor/sphlib/c/md4.c".}    
+{.compile: "c/md4.c".}    
 defineSphHash(MD4, 16, "md4", "", "", ""):
   type MD4* = object
     buf: array[64, cuchar]
     val: array[4, uint32]
     count: uint64
  
-{.compile: "vendor/sphlib/c/md5.c".}    
+{.compile: "c/md5.c".}    
 defineSphHash(MD5, 16, "md5", "", "", ""):
   type MD5* = object
     buf: array[64, cuchar]
     val: array[4, uint32]
     count: uint64
 
-{.compile: "vendor/sphlib/c/ripemd.c".}
+{.compile: "c/ripemd.c".}
 defineSphHash(RIPEMD, 16, "ripemd", "", "", ""):
   type RIPEMD* = object
     buf: array[64, cuchar]
@@ -116,7 +116,7 @@ defineSphHash(RIPEMD160, 20, "ripemd160", "", "", ""):
     val: array[5, uint32]
     count: uint64
    
-{.compile: "vendor/sphlib/c/whirlpool.c".}
+{.compile: "c/whirlpool.c".}
 defineSphHash(Whirlpool, 64, "whirlpool", "", "", ""):
   type Whirlpool* = object
     buf: array[64, cuchar]
@@ -129,7 +129,7 @@ defineSphHash(Whirlpool0, 64, "whirlpool0", "sph_whirlpool_init", "", ""):
 defineSphHash(Whirlpool1, 64, "whirlpool1", "sph_whirlpool_init", "", ""):
   type Whirlpool1* = distinct Whirlpool
 
-{.compile: "vendor/sphlib/c/panama.c".}  
+{.compile: "c/panama.c".}  
 defineSphHash(Panama, 32, "panama", "", "", ""):
   type Panama* = object
     data: array[32, cuchar]
@@ -138,7 +138,7 @@ defineSphHash(Panama, 32, "panama", "", "", ""):
     bufPtr: uint64
     state: array[17, uint32]
   
-{.compile: "vendor/sphlib/c/radiogatun.c".}
+{.compile: "c/radiogatun.c".}
 defineSphHash(RadioGatun32, 32, "radiogatun32", "", "", ""):
   type RadioGatun32* = object
     data: array[156, cuchar]
@@ -160,7 +160,7 @@ type HAVAL = object
   passes: uint64
   count: uint64
     
-{.compile: "vendor/sphlib/c/haval.c".}    
+{.compile: "c/haval.c".}    
 defineSphHash(HAVAL128_3, 16, "haval128_3", "", "", ""):
   type HAVAL128_3* = distinct HAVAL
     
