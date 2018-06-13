@@ -177,11 +177,7 @@ template appendParamsToQuery() =
     for k,v in r:
         uri &= fmt"&{k}={v}"
 
-<<<<<<< HEAD
-proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod="POST"): Future[JsonNode] {.async.} =
-=======
 proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
->>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
@@ -190,27 +186,6 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="
     let payloadHash = sphHash[SHA256](payload)
 
     # special header required by S3
-<<<<<<< HEAD
-    let headers = newStringTable({
-        "content-type": "application/x-www-form-urlencoded",
-        "x-amz-date": timeStr,
-        }, modeCaseInsensitive)
-
-    var uri = c.endpoint & "?Action=" & name & "&Version=" & c.apiVersion
-
-    for k,v in body:
-        uri &= fmt"&{k}={v}"
-        
-    echo uri
-    let req = AwsRequest[StringTableRef](
-        httpMethod: httpMethod,
-        uri: parseUri(uri),
-        headers: headers,
-        payloadHash: payloadHash
-    )
-
-    let resp = await c.request(req, payload)
-=======
     let headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
 
     var query = c.endpoint & uri
@@ -219,7 +194,6 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="
     let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
 
     let resp = c.request(req, payload)
->>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     # echo "RESP: ", resp
     result = transform(parseXml(newStringStream resp))
     # result = parseJson(resp)

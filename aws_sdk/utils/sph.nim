@@ -1,4 +1,4 @@
-import strutils,unicode
+import strutils,unicode,macros
 
 proc aryToString*(x: openarray[cuchar]): string =
   result = newStringOfCap(len(x))
