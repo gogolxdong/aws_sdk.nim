@@ -13,5 +13,4 @@ const awsApiMD_signatureVersion* = "v4"
 const awsApiMD_targetPrefix* = "AWSInsightsIndexService"
 const awsApiMD_uid* = "ce-2017-10-25"
 defineClient(CostExplorer)
-proc getCostAndUsage*(cl: CostExplorer, r: JsonNode): Future[JsonNode] = sendJsonRequest(cl, "GetCostAndUsage", "POST", "/", r)
 

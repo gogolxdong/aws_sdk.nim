@@ -7,7 +7,11 @@ import sph
 
 type
     Client* = ref object of RootObj
+<<<<<<< HEAD
         cl: AsyncHttpClient
+=======
+        cl: Httpclient
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
         credentials*: AwsCredentials
         region*: string
         endpoint*: string
@@ -44,7 +48,11 @@ proc close*(c: Client) =
         c.cl.close()
         c.cl = nil
 
+<<<<<<< HEAD
 proc request*(c: Client, req: AwsRequest, content: string = ""): Future[string] {.async.} =
+=======
+proc request*(c: Client, req: AwsRequest, content: string = ""): string =
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     var req = req
 
     const HttpDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'UTC'"
@@ -60,17 +68,29 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): Future[string] 
     req.headers["Authorization"] = authorizationHeaderv4(c.credentials, scope, req)
 
     if c.cl.isNil:
+<<<<<<< HEAD
         c.cl = newAsyncHttpClient()
+=======
+        c.cl = newHttpClient()
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     for k, v in req.headers:
         if k != "Host":
             c.cl.headers[k] = v
 
+<<<<<<< HEAD
     let resp = await c.cl.request($req.uri, req.httpMethod, body = content)
     result = await resp.body
 
 proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): Future[JsonNode] {.async.} =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     #const HttpDateFormat = "ddd, dd MMM yyyy HH:mm:ss 'UTC'"
+=======
+    let resp =  c.cl.request($req.uri, req.httpMethod, body = content)
+    result =  resp.body
+
+proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): JsonNode =
+    const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
 
@@ -94,7 +114,11 @@ proc sendJsonRequest*(c: Client, name, httpMethod, uri: string, r: JsonNode): Fu
         payloadHash: payloadHash
     )
 
+<<<<<<< HEAD
     let resp = await c.request(req, payload)
+=======
+    let resp =  c.request(req, payload)
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     result = parseJson(resp)
 
 proc transf(x: XmlNode; parent: var JsonTree) =
@@ -153,7 +177,11 @@ template appendParamsToQuery() =
     for k,v in r:
         uri &= fmt"&{k}={v}"
 
+<<<<<<< HEAD
 proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod="POST"): Future[JsonNode] {.async.} =
+=======
+proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     let time = getTime()
     let timeStr = format(getGMTime(time), HttpDateFormat)
@@ -162,6 +190,7 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod=
     let payloadHash = sphHash[SHA256](payload)
 
     # special header required by S3
+<<<<<<< HEAD
     let headers = newStringTable({
         "content-type": "application/x-www-form-urlencoded",
         "x-amz-date": timeStr,
@@ -181,6 +210,16 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="/", httpMethod=
     )
 
     let resp = await c.request(req, payload)
+=======
+    let headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
+
+    var query = c.endpoint & uri
+
+    echo query
+    let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
+
+    let resp = c.request(req, payload)
+>>>>>>> a0f3ecce7469a725d2cb4def34d070ea3a98bd05
     # echo "RESP: ", resp
     result = transform(parseXml(newStringStream resp))
     # result = parseJson(resp)
