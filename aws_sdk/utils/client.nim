@@ -58,7 +58,7 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): string =
     if not c.signingName.isNil:
         scope.service = c.signingName
     req.headers["Authorization"] = authorizationHeaderv4(c.credentials, scope, req)
-
+    echo req.headers
     if c.cl.isNil:
         c.cl = newHttpClient()
     for k, v in req.headers:
@@ -163,8 +163,6 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="
     # special header required by S3
 
     var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
-    if body.len > 0:
-        headers["content-type"] = "application/x-amz-json-1.1"
 
     var query = c.endpoint & uri
 
@@ -173,5 +171,29 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="
 
     let resp = c.request(req, payload)
     # echo "RESP: ", resp
+
     result = transform(parseXml(newStringStream resp))
     # result = parseJson(resp)
+
+proc sendCERequest*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
+    const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
+    let time = getTime()
+    let timeStr = format(getGMTime(time), HttpDateFormat)
+
+    let payload = $body
+    let payloadHash = sphHash[SHA256](payload)
+
+    # special header required by S3
+
+    var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
+    headers["content-type"] = "application/x-amz-json-1.1"
+    headers["x-amz-target"] = "AWSInsightsIndexService.GetCostAndUsage"
+
+    var query = c.endpoint & uri
+
+    echo query
+    let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
+
+    let resp = c.request(req, payload)
+    # echo "RESP: ", resp
+    result = parseJson(resp)
