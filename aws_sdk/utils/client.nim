@@ -161,7 +161,10 @@ proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="
     let payloadHash = sphHash[SHA256](payload)
 
     # special header required by S3
-    let headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
+
+    var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
+    if body.len > 0:
+        headers["content-type"] = "application/x-amz-json-1.1"
 
     var query = c.endpoint & uri
 
