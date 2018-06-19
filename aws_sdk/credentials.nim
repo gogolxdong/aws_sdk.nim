@@ -30,5 +30,19 @@ proc initCredentialScope*(uri: Uri, time: Time): AwsCredentialScope =
     region = components[1]
   elif components.len == 3:
     region = "us-east-1"
+  elif components.len == 5:
+    region = components[2]
+    
+
+  result = AwsCredentialScope(time: time, region: region, service: service)
+
+proc initApiCredentialScope*(uri: Uri, time: Time): AwsCredentialScope =
+  let components = split(uri.hostname, '.')
+  let service = components[1]
+  var region = ""
+  if components.len == 4:
+    region = components[1]
+  elif components.len == 3:
+    region = "us-east-1"
 
   result = AwsCredentialScope(time: time, region: region, service: service)

@@ -53,10 +53,11 @@ proc request*(c: Client, req: AwsRequest, content: string = ""): string =
     if "Host" notin req.headers: req.headers["Host"] = req.uri.hostname
     if "Date" notin req.headers and "X-Amz-Date" notin req.headers:
         req.headers["Date"] = format(getGMTime(time), HttpDateFormat)
-
+    # if req.uri.hostname.startsWith("api"): req.uri.hostname = req.uri.hostname.split(".", 2)[1]
     var scope = initCredentialScope(req.uri, time)
     if not c.signingName.isNil:
         scope.service = c.signingName
+        echo scope.service
     req.headers["Authorization"] = authorizationHeaderv4(c.credentials, scope, req)
     echo req.headers
     if c.cl.isNil:
@@ -187,7 +188,7 @@ proc sendCERequest*(c: Client, name:string, body:JsonNode, uri="", httpMethod="P
 
     var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
     headers["content-type"] = "application/x-amz-json-1.1"
-    headers["x-amz-target"] = "AWSInsightsIndexService.GetCostAndUsage"
+    headers["x-amz-target"] = "AWSInsightsIndexService." & name
 
     var query = c.endpoint & uri
 
@@ -196,4 +197,26 @@ proc sendCERequest*(c: Client, name:string, body:JsonNode, uri="", httpMethod="P
 
     let resp = c.request(req, payload)
     # echo "RESP: ", resp
+    result = parseJson(resp)
+
+proc sendPricingRequest*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
+    const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
+    let time = getTime()
+    let timeStr = format(getGMTime(time), HttpDateFormat)
+
+    let payload = $body
+    let payloadHash = sphHash[SHA256](payload)
+
+    # special header required by S3
+
+    var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
+    headers["content-type"] = "application/x-amz-json-1.1"
+    headers["x-amz-target"] = "AWSPriceListService." & name
+    var query = c.endpoint & uri
+
+    echo query
+    let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
+
+    let resp = c.request(req, payload)
+    echo "RESP: ", resp
     result = parseJson(resp)
