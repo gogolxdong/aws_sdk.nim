@@ -1,6 +1,6 @@
 import packedjson, xmlparser,xmltree,strutils
 
-proc transf(x: XmlNode; parent: var JsonNode) =
+proc transf(x: XmlNode; parent: var JsonTree) =
     proc atomToJson(x: string): JsonNode =
       if x == "true": %true
       elif x == "false": %false
@@ -42,7 +42,7 @@ proc transf(x: XmlNode; parent: var JsonNode) =
       else:
         parent[x.tag] = obj
   
-proc transform*(x: XmlNode): JsonNode =
+proc transform*(x: XmlNode): JsonTree =
     result = newJObject()
     transf(x, result)
   
