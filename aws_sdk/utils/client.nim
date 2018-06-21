@@ -1,4 +1,4 @@
-import packedjson, asyncdispatch, httpclient, times, uri, strtabs,xmlparser,xmltree,strutils,streams,strformat
+import json, asyncdispatch, httpclient, times, uri, strtabs,xmlparser,xmltree,strutils,streams,strformat
 
 import ../credentials
 import request,xmltojson
@@ -72,80 +72,27 @@ proc sendJsonRequest*(c: Client, name:string, uri: string, r: JsonNode,  httpMet
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     let time = getTime()
     let timeStr = format(utc(time), HttpDateFormat)
-
     let payload = $r
     let payloadHash = sphHash[SHA256](payload)
-
     let headers = newStringTable({"content-type": "application/x-amz-json-" & c.jsonVersion,"x-amz-target": c.targetPrefix & "." & name,"x-amz-date": timeStr,}, modeCaseInsensitive)
-
     let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(c.endpoint),headers: headers,payloadHash: payloadHash)
-
     let resp =  c.request(req, payload)
-    echo resp
+    # echo "RESP: ", resp
     result = parseJson(resp)
 
 proc sendEC2Request*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
     let time = getTime()
     let timeStr = format(utc(time), HttpDateFormat)
-
     let payload = ""
     let payloadHash = sphHash[SHA256](payload)
-
-    # special header required by S3
-
     var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
-
     var query = c.endpoint & uri
-
     echo query
     let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
-
     let resp = c.request(req, payload)
     # echo "RESP: ", resp
-
     result = transform(parseXml(newStringStream resp))
-    # result = parseJson(resp)
-
-proc sendCERequest*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
-    const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
-    let time = getTime()
-    let timeStr = format(utc(time), HttpDateFormat)
-
-    let payload = $body
-    let payloadHash = sphHash[SHA256](payload)
-
-    # special header required by S3
-
-    var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
-    headers["content-type"] = "application/x-amz-json-1.1"
-    headers["x-amz-target"] = "AWSInsightsIndexService." & name
-
-    var query = c.endpoint & uri
-
-    echo query
-    let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
-
-    let resp = c.request(req, payload)
-    # echo "RESP: ", resp
-    result = parseJson(resp)
-
-proc sendPricingRequest*(c: Client, name:string, body:JsonNode, uri="", httpMethod="POST"): JsonNode =
-    const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
-    let time = getTime()
-    let timeStr = format(utc(time), HttpDateFormat)
-
-    let payload = $body
-    let payloadHash = sphHash[SHA256](payload)
-
-    var headers = newStringTable({"content-type": "application/x-www-form-urlencoded","x-amz-date": timeStr}, modeCaseInsensitive)
-    var query = c.endpoint & uri
-
-    echo query
-    let req = AwsRequest[StringTableRef](httpMethod: httpMethod,uri: parseUri(query),headers: headers,payloadHash: payloadHash)
-
-    let resp = c.request(req, payload)
-    result = parseJson(resp)
 
 proc sendCWRequest*(c: Client, name:string, uri: string, body:JsonNode, httpMethod="POST"): JsonNode =
     const HttpDateFormat = "yyyyMMdd'T'HHmmss'Z'"
