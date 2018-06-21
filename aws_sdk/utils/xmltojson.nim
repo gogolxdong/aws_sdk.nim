@@ -1,4 +1,4 @@
-import json, xmlparser,xmltree,strutils
+import packedjson, xmlparser,xmltree,strutils
 
 proc transf(x: XmlNode; parent: var JsonNode) =
     proc atomToJson(x: string): JsonNode =

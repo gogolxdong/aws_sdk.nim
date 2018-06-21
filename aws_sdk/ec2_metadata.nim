@@ -1,4 +1,4 @@
-import httpclient, asyncdispatch, json, strutils
+import httpclient, asyncdispatch, packedjson, strutils
 
 type EC2MetaData* = ref object
 

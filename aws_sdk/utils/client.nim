@@ -1,4 +1,4 @@
-import json, asyncdispatch, httpclient, times, uri, strtabs,xmlparser,xmltree,strutils,streams,strformat
+import packedjson, asyncdispatch, httpclient, times, uri, strtabs,xmlparser,xmltree,strutils,streams,strformat
 
 import ../credentials
 import request,xmltojson

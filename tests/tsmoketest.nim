@@ -1,4 +1,4 @@
-import json, asyncdispatch, strutils, macros
+import packedjson, asyncdispatch, strutils, macros
 import ../aws_sdk/[ credentials ]
 
 macro mkImport(name: static[string]): untyped =
