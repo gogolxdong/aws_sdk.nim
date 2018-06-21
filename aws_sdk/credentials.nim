@@ -19,7 +19,7 @@ proc initAwsCredentialsFromEnv*(): AwsCredentials =
   )
 
 proc `$`*(scope: AwsCredentialScope): string =
-  let date = format(getGMTime(scope.time), "yyyyMMdd")
+  let date = format(utc(scope.time), "yyyyMMdd")
   result = "$1/$2/$3/aws4_request" % [date, scope.region, scope.service]
 
 proc initCredentialScope*(uri: Uri, time: Time): AwsCredentialScope =

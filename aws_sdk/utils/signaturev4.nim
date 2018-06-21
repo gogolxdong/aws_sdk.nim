@@ -56,7 +56,7 @@ proc signableStringv4(scope: AwsCredentialScope, request: AwsRequest): string =
 
 proc signingKeyv4(credentials: AwsCredentials, scope: AwsCredentialScope): string =
   let dateKey = "AWS4$1" % [credentials.secretKey]
-  let date = format(getGMTime(scope.time), AwsDateFormatv4)
+  let date = format(utc(scope.time), AwsDateFormatv4)
   let dateHmac = sphHmac[SHA256](dateKey, date)
   let regionHmac = sphHmac[SHA256](dateHmac, scope.region)
   let serviceHmac = sphHmac[SHA256](regionHmac, scope.service)
@@ -83,7 +83,7 @@ proc authenticationQueryParamsv4(credentials: AwsCredentials,scope: AwsCredentia
   result = newStringTable()
   result["X-Amz-Algorithm"] = AwsDefaultAlgorithmv4
   result["X-Amz-Credential"] = "$1/$2" % [credentials.accessKeyId, $scope]
-  result["X-Amz-Date"] = format(getGMTime(scope.time), AwsTimestampFormatv4)
+  result["X-Amz-Date"] = format(utc(scope.time), AwsTimestampFormatv4)
   result["X-Amz-Expires"] = $expiry
   result["X-Amz-SignedHeaders"] = formattedHeaderNamesStr(request.headers)
 

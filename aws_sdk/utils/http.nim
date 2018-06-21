@@ -17,7 +17,7 @@ proc request*(req: AwsRequest, credentials: AwsCredentials, content: string = ""
   
   if not hasKey(varreq.headers, "Host"): varreq.headers["Host"] = varreq.uri.hostname
   if not hasKey(varreq.headers, "Date") and not hasKey(varreq.headers, "X-Amz-Date"):
-    varreq.headers["Date"] = format(getGMTime(time), HttpDateFormat)
+    varreq.headers["Date"] = format(utc(time), HttpDateFormat)
 
   let scope = initCredentialScope(varreq.uri, time)
   varreq.headers["Authorization"] = authorizationHeaderv4(credentials, scope, varreq)

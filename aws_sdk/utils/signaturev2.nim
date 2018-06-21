@@ -17,7 +17,7 @@ proc authenticationQueryParamsv2(credentials: AwsCredentials, time: Time): Strin
   result["AWSAccessKeyId"] = credentials.accessKeyId
   result["SignatureVersion"] = "2"
   result["SignatureMethod"] = "HmacSHA256"
-  result["Timestamp"] = format(getGMTime(time), AwsTimestampFormatv2)
+  result["Timestamp"] = format(utc(time), AwsTimestampFormatv2)
 
 proc canonicalQueryv2(request: AwsRequest): string =
   let lines = [
